@@ -1,1 +1,48 @@
-sampledfadsfadf
+Prerequisites:
+Databricks community account. 
+Microsoft Excel.
+Tableau. 
+Kibana. 
+
+Queries: 
+#Create table- 
+display(sqlContext.sql("SELECT passenger_count, fare_amount, pickup_latitude, trip_distance, tolls_amount, pickup_longitude, mta_tax, total_amount, dropoff_latitude, vendor_id, surcharge, pickup_datetime, payment_type, dropoff_datetime, dropoff_longitude, rate_code, type, tip_amount from yellow_taxi_data"))
+
+#Toll amount dispute-
+display(sqlContext.sql("SELECT tolls_amount as score,count(*) as total from(select case when tolls_amount between 0 and 1 then '0-1' when tolls_amount between 1 and 5 then '1-5' when tolls_amount between 5 and 10 then '5-10' when tolls_amount between 10 and 20 then '10-20'  else 'others' end as tolls_amount from yellow_taxi_data where PAYMENT_TYPE='DIS') yellow_taxi_data group by yellow_taxi_data.tolls_amount"))
+
+#Count-trip distance-
+display(sqlContext.sql("SELECT trip_distance as score,count(*) as total from(select case when trip_distance between 0 and 2 then '0-2' when trip_distance between 2 and 4 then '2-4' when trip_distance between 4 and 6 then '4-6' when trip_distance between 6 and 8 then '6-8' when trip_distance between 8 and 10 then '8-10' else 'others' end as trip_distance from yellow_taxi_data where PAYMENT_TYPE='DIS') yellow_taxi_data group by yellow_taxi_data.trip_distance"))
+
+#Passenger count type-
+display(sqlContext.sql("select count(PAYMENT_TYPE),passenger_count FROM yellow_taxi_data where PAYMENT_TYPE='DIS' GROUP BY passenger_count"))
+
+
+#Tip amount-
+display(sqlContext.sql("SELECT tip_amount as score,count(*) as total from(select case when tip_amount between 0 and 1 then '0-1' when tip_amount between 1 and 5 then '1-5' when tip_amount between 5 and 10 then '5-10' when tip_amount between 10 and 20 then '10-20'  else 'others' end as tip_amount from yellow_taxi_data where PAYMENT_TYPE='DIS') yellow_taxi_data group by yellow_taxi_data.tip_amount"))
+
+#Pickup datetime- 
+display(sqlContext.sql("SELECT pickup_datetime, payment_type FROM yellow_taxi_data"
+
+#Dropoff datetime-
+display(sqlContext.sql("SELECT dropoff_datetime, payment_type FROM yellow_taxi_data"))
+
+#Fare amount-
+display(sqlContext.sql("SELECT fare_amount as score,count(*) as total from(select case when fare_amount between 0 and 1 then '0-1' when fare_amount between 1 and 5 then '1-5' when fare_amount between 5 and 10 then '5-10' when fare_amount between 10 and 20 then '10-20'  else 'others' end as fare_amount from yellow_taxi_data where PAYMENT_TYPE='DIS') yellow_taxi_data group by yellow_taxi_data.fare_amount"))
+
+#Total amount-
+display(sqlContext.sql("SELECT total_amount as score,count(*) as total from(select case when total_amount between 0 and 1 then '0-1' when total_amount between 1 and 5 then '1-5' when total_amount between 5 and 10 then '5-10' when total_amount between 10 and 20 then '10-20'  else 'others' end as total_amount from yellow_taxi_data where PAYMENT_TYPE='DIS') yellow_taxi_data group by yellow_taxi_data.total_amount"))
+
+
+
+
+
+#Surcharge-
+display(sqlContext.sql("SELECT surcharge as score,count(*) as total from(select case when surcharge between 0 and 1 then '0-1' when surcharge between 1 and 5 then '1-5' when surcharge between 5 and 10 then '5-10' when surcharge between 10 and 20 then '10-20'  else 'others' end as surcharge from yellow_taxi_data where PAYMENT_TYPE='DIS') yellow_taxi_data group by yellow_taxi_data.surcharge"))
+
+#Pickup-dropoff date-time-
+display(sqlContext.sql("SELECT pickup_datetime, count(*) as dispute from yellow_taxi_data where payment_type='DIS' group by yellow_taxi_data.pickup_datetime"))
+
+#Pickup location by latitude-longitude- 
+display(sqlContext.sql("select pickup_latitude, pickup_longitude, payment_type as dispute from yellow_taxi_data where payment_type='DIS'"))
+
